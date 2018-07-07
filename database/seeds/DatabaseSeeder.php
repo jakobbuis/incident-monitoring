@@ -1,16 +1,17 @@
 <?php
 
+use App\Incident;
+use App\Website;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     *
-     * @return void
-     */
     public function run()
     {
-        // $this->call(UsersTableSeeder::class);
+        Website::create(['name' => 'IN10', 'url' => 'https://www.in10.nl']);
+        Website::create(['name' => 'Jakob', 'url' => 'https://www.jakobbuis.nl']);
+        $teapot = Website::create(['name' => 'Teapot', 'url' => 'https://httpstat.us/418']);
+
+        Incident::create(['type' => 'SiteDown', 'data' => [], 'website_id' => $teapot->id]);
     }
 }
