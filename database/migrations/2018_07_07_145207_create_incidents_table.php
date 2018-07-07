@@ -16,6 +16,7 @@ class CreateIncidentsTable extends Migration
         Schema::create('incidents', function (Blueprint $table) {
             $table->increments('id');
             $table->string('type');
+            $table->integer('level')->default(4);
             $table->json('data');
             $table->timestamps();
             $table->datetime('resolved_at')->nullable();
