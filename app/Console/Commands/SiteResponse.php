@@ -33,7 +33,7 @@ class SiteResponse extends Command
         $status = $response->getStatusCode();
         Log::info("Website {$website->name} responded to check with HTTP {$status}");
 
-        if ($status < 300) {
+        if ($status >= 200 && $status < 400) {
             $website->startIncident('SiteDown', Incident::LEVEL_CRITICAL, (object) [
                 'http_status_code' => $status,
             ]);
