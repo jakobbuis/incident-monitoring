@@ -13,13 +13,7 @@
     </head>
     <body>
         <div id="app">
-            <div class=container>
-                <nav class="navbar navbar-dark bg-dark">
-                    <a class="navbar-brand" href="#">Incident monitoring</a>
-                </nav>
-
-                <feed></feed>
-            </div>
+            <feed></feed>
         </div>
 
         <script type="text/javascript" src="{{ mix('js/app.js') }}"></script>

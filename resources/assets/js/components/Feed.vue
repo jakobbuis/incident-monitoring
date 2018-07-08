@@ -1,19 +1,33 @@
 <template>
-    <div>
-        <p v-if="incidents.length == 0">
-            No incidents currently ongoing
-        </p>
-        <template v-else>
-            <incident
-                v-for="incident in ongoingIncidents"
-                :key="incident.id"
-                :incident="incident"></incident>
-            <hr>
-            <incident
-                v-for="incident in resolvedIncidents"
-                :key="incident.id"
-                :incident="incident"></incident>
-        </template>
+    <div class=container>
+        <nav class="navbar navbar-dark" :class="poll.failing ? 'bg-red' : 'bg-dark'">
+            <a class="navbar-brand" href="#">Incident monitoring</a>
+
+            <div class="float-right">
+                <span class="badge badge-pill badge-light" v-if="poll.failing">
+                    Updating failed, last successful
+                    {{ poll.lastSuccessful.toLocaleString() }})
+                </span>
+            </div>
+        </nav>
+
+        <div>
+            <p v-if="incidents.length == 0">
+                No incidents currently ongoing
+            </p>
+
+            <template v-else>
+                <incident
+                    v-for="incident in ongoingIncidents"
+                    :key="incident.id"
+                    :incident="incident"></incident>
+                <hr>
+                <incident
+                    v-for="incident in resolvedIncidents"
+                    :key="incident.id"
+                    :incident="incident"></incident>
+            </template>
+        </div>
     </div>
 </template>
 
@@ -25,11 +39,32 @@ export default {
     data() {
         return {
             incidents: [],
+            poll: {
+                failing: false,
+                lastSuccessful: null,
+            },
         };
     },
 
     mounted() {
-        axios.get('/api/incidents').then(response => this.incidents = response.data.data);
+        this.pollChanges();
+    },
+
+    methods: {
+        pollChanges() {
+            axios.get('/api/incidents').then(response => {
+                this.incidents = response.data.data;
+
+                this.poll.failing = false;
+                this.poll.lastSuccessful = new Date;
+
+                setTimeout(this.pollChanges, 5*1000);
+            }).catch(() => {
+                this.poll.failing = true;
+
+                setTimeout(this.pollChanges, 30*1000);
+            });
+        }
     },
 
     computed: {
@@ -43,3 +78,9 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+.bg-red {
+    background-color: #dc3545 !important;
+}
+</style>
