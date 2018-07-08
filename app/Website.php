@@ -8,7 +8,7 @@ class Website extends Model
 {
     protected $fillable = ['name', 'url'];
 
-    public function startIncident(string $type, int $level = Incident::LEVEL_NOIMPACT, object $data = null)
+    public function startIncident(string $type, int $level = Incident::LEVEL_NOIMPACT, $data = null)
     {
         if (!in_array($level, Incident::LEVELS)) {
             throw new \DomainException('Invalid incident level');
