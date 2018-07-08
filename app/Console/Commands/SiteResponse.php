@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Incident;
 use App\Website;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -29,8 +30,16 @@ class SiteResponse extends Command
 
     public function checkStatus(Website $website)
     {
-        $response = $this->guzzle->get($website->url, ['http_errors' => false]);
-        $status = $response->getStatusCode();
+        try {
+            $response = $this->guzzle->get($website->url, ['http_errors' => false]);
+            $status = $response->getStatusCode();
+        } catch (GuzzleException $e) {
+            Log::info("Website {$website->name} responded to check with GuzzleException", $e);
+            $website->startIncident('SiteDown', Incident::LEVEL_CRITICAL, (object) [
+                'http_status_code' => null,
+            ]);
+            return;
+        }
         Log::info("Website {$website->name} responded to check with HTTP {$status}");
 
         if ($status >= 400) {
