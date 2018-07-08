@@ -6,6 +6,7 @@ use App\Incident;
 use App\Website;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class SiteResponse extends Command
 {
