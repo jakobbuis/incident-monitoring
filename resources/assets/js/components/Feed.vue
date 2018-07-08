@@ -11,7 +11,9 @@
             </div>
         </nav>
 
-        <div>
+        <div class="feed">
+            <div class="outdated-overlay" v-if="poll.failing"></div>
+
             <p v-if="incidents.length == 0">
                 No incidents currently ongoing
             </p>
@@ -82,5 +84,17 @@ export default {
 <style scoped>
 .bg-red {
     background-color: #dc3545 !important;
+}
+
+.feed {
+    position: relative;
+}
+
+.outdated-overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 10;
+    background-color: rgba(0,0,0,0.5);
 }
 </style>
