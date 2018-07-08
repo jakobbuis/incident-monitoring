@@ -14,6 +14,8 @@ class Incident extends JsonResource
             'data' => $this->data,
             'level' => $this->level,
             'website' => Website::make($this->website),
+            'detected_at' => $this->created_at ? $this->created_at->toISO8601String() : null,
+            'resolved_at' => $this->resolved_at ? $this->resolved_at->toISO8601String() : null,
         ];
     }
 }
