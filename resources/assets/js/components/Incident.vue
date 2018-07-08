@@ -15,6 +15,10 @@
                 <strong>Last change:</strong>
                 {{ statusSince }}
             </li>
+            <li>
+                <strong>Returned status code:</strong>
+                {{ incident.data.http_status_code || 'unknown' }}
+            </li>
         </ul>
     </div>
 </template>
