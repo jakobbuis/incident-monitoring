@@ -47,10 +47,6 @@ export default {
             return 'Unknown incident';
         },
 
-        description() {
-
-        },
-
         status() {
             return this.incident.resolved_at === null ? 'Ongoing' : 'Resolved';
         },
