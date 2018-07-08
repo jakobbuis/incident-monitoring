@@ -22,7 +22,6 @@ class Website extends Model
         $incident = $this->incidents()->where('type', $type)->first();
         if ($incident) {
             $incident->resolve();
-            $incident->save();
         }
     }
 
