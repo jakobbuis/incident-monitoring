@@ -32,13 +32,12 @@ class SiteResponse extends Command
         $status = $response->getStatusCode();
 
         if ($status < 300) {
-            return;
+            $website->startIncident('SiteDown', Incident::LEVEL_CRITICAL, (object) [
+                'http_status_code' => $status,
+            ]);
         }
-
-        Incident::firstOrCreate([
-            'type' => 'SiteDown',
-            'website_id' => $website->id,
-            'level' => 1,
-        ]);
+        else {
+            $website->resolveIncident('SiteDown');
+        }
     }
 }
