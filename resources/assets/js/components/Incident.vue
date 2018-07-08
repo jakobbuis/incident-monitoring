@@ -25,6 +25,10 @@ export default {
 
     computed: {
         color() {
+            if (this.incident.resolved_at !== null) {
+                return 'bg-informational';
+            }
+
             if (this.incident.level === 1) {
                 return 'bg-danger text-white';
             }
@@ -34,7 +38,6 @@ export default {
             if (this.incident.level === 3) {
                 return 'bg-success text-white';
             }
-            return 'bg-informational';
         },
 
         title() {
