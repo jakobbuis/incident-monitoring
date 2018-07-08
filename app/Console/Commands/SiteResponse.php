@@ -34,7 +34,9 @@ class SiteResponse extends Command
             $response = $this->guzzle->get($website->url, ['http_errors' => false]);
             $status = $response->getStatusCode();
         } catch (GuzzleException $e) {
-            Log::info("Website {$website->name} responded to check with GuzzleException", $e);
+            Log::info("Website {$website->name} responded to check with GuzzleException", [
+                'exception' => $e,
+            ]);
             $website->startIncident('SiteDown', Incident::LEVEL_CRITICAL, (object) [
                 'http_status_code' => null,
             ]);
