@@ -6,7 +6,7 @@
             <div class="float-right">
                 <span class="badge badge-pill badge-light" v-if="poll.failing">
                     Updating failed, last successful
-                    {{ poll.lastSuccessful.toLocaleString() }})
+                    {{ poll.lastSuccessful ? poll.lastSuccessful.toLocaleString() : 'unknown' }}
                 </span>
             </div>
         </nav>
