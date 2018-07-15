@@ -1,7 +1,16 @@
 <template>
     <div class=container>
         <nav class="navbar navbar-dark" :class="poll.failing ? 'bg-red' : 'bg-dark'">
-            <a class="navbar-brand" href="#">Incident monitoring</a>
+            <a class="navbar-brand" href="#">
+                Incident monitoring
+                <span class="badge badge-pill badge-danger" v-if="ongoingIncidents.length > 0">
+                    {{ ongoingIncidents.length }} incidents ongoing
+                </span>
+
+                <span class="badge badge-pill badge-success" v-if="ongoingIncidents.length === 0">
+                    No incidents currently in progress
+                </span>
+            </a>
 
             <div class="float-right">
                 <span class="badge badge-pill badge-light" v-if="poll.failing">
@@ -82,6 +91,10 @@ export default {
 </script>
 
 <style scoped>
+.navbar-brand .badge {
+    margin-left: 2em;
+}
+
 .bg-red {
     background-color: #dc3545 !important;
 }
