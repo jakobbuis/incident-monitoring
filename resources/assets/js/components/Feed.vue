@@ -51,7 +51,7 @@ export default {
 
     methods: {
         pollChanges() {
-            axios.get('/api/incidents').then(response => {
+            Axios.get('/api/incidents').then(response => {
                 this.incidents = response.data.data;
                 this.poll.lastSuccessful = new Date;
                 setTimeout(this.pollChanges, 5*1000);
