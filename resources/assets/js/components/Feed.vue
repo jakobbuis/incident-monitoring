@@ -13,31 +13,20 @@
             </a>
 
             <div class="float-right">
-                <span class="badge badge-pill badge-light" v-if="poll.failing">
-                    Updating failed, last successful
-                    {{ poll.lastSuccessful ? poll.lastSuccessful.toLocaleString() : 'unknown' }}
-                </span>
+                Last update: {{ lastPoll ? lastPoll : 'unknown' }}
             </div>
         </nav>
 
         <div class="feed">
-            <div class="outdated-overlay" v-if="poll.failing"></div>
-
-            <p v-if="incidents.length == 0">
-                No incidents currently ongoing
-            </p>
-
-            <template v-else>
-                <incident
-                    v-for="incident in ongoingIncidents"
-                    :key="incident.id"
-                    :incident="incident"></incident>
-                <hr>
-                <incident
-                    v-for="incident in resolvedIncidents"
-                    :key="incident.id"
-                    :incident="incident"></incident>
-            </template>
+            <incident
+                v-for="incident in ongoingIncidents"
+                :key="incident.id"
+                :incident="incident"></incident>
+            <hr>
+            <incident
+                v-for="incident in resolvedIncidents"
+                :key="incident.id"
+                :incident="incident"></incident>
         </div>
     </div>
 </template>
@@ -51,7 +40,6 @@ export default {
         return {
             incidents: [],
             poll: {
-                failing: false,
                 lastSuccessful: null,
             },
         };
@@ -65,15 +53,8 @@ export default {
         pollChanges() {
             axios.get('/api/incidents').then(response => {
                 this.incidents = response.data.data;
-
-                this.poll.failing = false;
                 this.poll.lastSuccessful = new Date;
-
                 setTimeout(this.pollChanges, 5*1000);
-            }).catch(() => {
-                this.poll.failing = true;
-
-                setTimeout(this.pollChanges, 30*1000);
             });
         }
     },
@@ -86,6 +67,22 @@ export default {
         resolvedIncidents() {
             return this.incidents.filter(i => i.resolved_at !== null);
         },
+
+        lastPoll() {
+            const moment = this.poll.lastSuccessful;
+            if (moment === null) {
+                return null;
+            }
+
+            const d = `0${moment.getDate()}`.slice(-2);
+            const m = `0${moment.getMonth()}`.slice(-2);
+            const y = moment.getFullYear();
+            const h = moment.getHours();
+            const i = moment.getMinutes();
+            const s = moment.getSeconds();
+
+            return `${d}-${m}-${y} ${h}:${i}:${s}`;
+        },
     }
 };
 </script>
@@ -95,19 +92,11 @@ export default {
     margin-left: 2em;
 }
 
-.bg-red {
-    background-color: #dc3545 !important;
-}
-
 .feed {
     position: relative;
 }
 
-.outdated-overlay {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    z-index: 10;
-    background-color: rgba(0,0,0,0.5);
+.navbar .float-right {
+    color: white;
 }
 </style>
