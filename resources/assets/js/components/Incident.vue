@@ -9,7 +9,7 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
                 <strong>URL:</strong>
-                <a :href="incident.website.url">
+                <a :href="incident.website.url" target="_blank" rel="noopener">
                     {{ incident.website.url }}
                 </a>
             </li>
