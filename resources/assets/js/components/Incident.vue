@@ -1,24 +1,28 @@
 <template>
     <div class="card mb-3" :class="color">
         <div class="card-header">
-            {{ title }}
+            {{ incident.website.name }}
             <div class="float-right">
                 <span class="badge badge-pill badge-light">{{ status }}</span>
             </div>
         </div>
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
-                <strong>URL:</strong>
+                <strong>URL</strong>
                 <a :href="incident.website.url" target="_blank" rel="noopener">
                     {{ incident.website.url }}
                 </a>
             </li>
             <li class="list-group-item">
-                <strong>Last change:</strong>
+                <strong>Incident</strong>
+                Website broken (HTTP status code was an error)
+            </li>
+            <li class="list-group-item">
+                <strong>Last change</strong>
                 {{ statusSince }}
             </li>
             <li class="list-group-item">
-                <strong>Status code:</strong>
+                <strong>HTTP response code</strong>
                 {{ incident.data.http_status_code || 'unknown' }}
             </li>
         </ul>
@@ -44,13 +48,6 @@ export default {
             if (this.incident.level === 3) {
                 return 'bg-success text-white';
             }
-        },
-
-        title() {
-            if (this.incident.type === 'SiteDown') {
-                return `Website down: ${this.incident.website.name}`;
-            }
-            return 'Unknown incident';
         },
 
         status() {
@@ -81,6 +78,6 @@ li {
 }
 li strong {
     display: inline-block;
-    width: 10em;
+    width: 12em;
 }
 </style>
