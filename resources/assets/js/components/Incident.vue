@@ -9,7 +9,9 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
                 <strong>URL:</strong>
-                {{ incident.website.url }}
+                <a :href="incident.website.url">
+                    {{ incident.website.url }}
+                </a>
             </li>
             <li class="list-group-item">
                 <strong>Last change:</strong>
