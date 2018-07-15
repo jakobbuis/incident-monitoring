@@ -79,7 +79,7 @@ export default {
             const y = moment.getFullYear();
             const h = moment.getHours();
             const i = moment.getMinutes();
-            const s = moment.getSeconds();
+            const s = `0${moment.getSeconds()}`.slice(-2);
 
             return `${d}-${m}-${y} ${h}:${i}:${s}`;
         },
