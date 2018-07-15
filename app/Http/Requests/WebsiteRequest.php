@@ -26,8 +26,8 @@ class WebsiteRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|max:255|unique:websites,name',
-            'url' => 'required|url|max:255|unique:websites,url',
+            'name' => 'required|max:255|unique:websites,name,'.$this->id,
+            'url' => 'required|url|max:255|unique:websites,url,'.$this->id,
         ];
     }
 
