@@ -15,13 +15,15 @@
             </li>
             <li class="list-group-item">
                 <strong>Incident</strong>
-                Website broken (HTTP status code was an error)
+                {{ cause }}
             </li>
             <li class="list-group-item">
                 <strong>Last change</strong>
                 {{ statusSince }}
             </li>
-            <li class="list-group-item">
+
+            <!-- Custom properties -->
+            <li class="list-group-item" v-if="incident.type === 'SiteDown'">
                 <strong>HTTP response code</strong>
                 {{ incident.data.http_status_code || 'unknown' }}
             </li>
@@ -67,7 +69,15 @@ export default {
                 return point.toLocaleTimeString();
             }
             return point.toLocaleString();
-        }
+        },
+
+        cause() {
+            if (this.incident.type === 'SiteDown') {
+                return 'HTTP response status is higher than 400';
+            } else if (this.incident.type === 'CertificateError') {
+                return 'SSL-certificate failed validation';
+            }
+        },
     },
 };
 </script>

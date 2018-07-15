@@ -37,9 +37,15 @@ class SiteResponse extends Command
             Log::info("Website {$website->name} responded to check with GuzzleException", [
                 'exception' => $e,
             ]);
-            $website->startIncident('SiteDown', Incident::LEVEL_CRITICAL, (object) [
-                'http_status_code' => null,
-            ]);
+            // Check for certificate errors
+            if (strpos($e->getMessage(), 'certificate') !== FALSE) {
+                $website->startIncident('CertificateError', Incident::LEVEL_IMPORTANT);
+            }
+            else {
+                $website->startIncident('SiteDown', Incident::LEVEL_CRITICAL, (object) [
+                    'http_status_code' => null,
+                ]);
+            }
             return;
         }
         Log::info("Website {$website->name} responded to check with HTTP {$status}");
