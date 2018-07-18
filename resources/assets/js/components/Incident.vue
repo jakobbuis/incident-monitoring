@@ -1,28 +1,21 @@
 <template>
     <div class="card mb-3" :class="color">
         <div class="card-header">
+            <span class="badge badge-pill badge-light badge-static">{{ problem }}</span>
+
             {{ incident.website.name }}
+
             <div class="float-right">
                 <span class="badge badge-pill badge-light">{{ status }}</span>
             </div>
         </div>
-        <ul class="list-group list-group-flush">
+       <ul class="list-group list-group-flush">
             <li class="list-group-item">
                 <strong>URL</strong>
                 <a :href="incident.website.url" target="_blank" rel="noopener">
                     {{ incident.website.url }}
                 </a>
             </li>
-            <li class="list-group-item">
-                <strong>Incident</strong>
-                {{ cause }}
-            </li>
-            <li class="list-group-item">
-                <strong>Last change</strong>
-                {{ statusSince }}
-            </li>
-
-            <!-- Custom properties -->
             <li class="list-group-item" v-if="incident.type === 'SiteDown'">
                 <strong>HTTP response code</strong>
                 {{ incident.data.http_status_code || 'unknown' }}
@@ -52,8 +45,17 @@ export default {
             }
         },
 
+        problem() {
+            if (this.incident.type === 'SiteDown') {
+                return 'Website broken';
+            } else if (this.incident.type === 'CertificateError') {
+                return 'SSL problem';
+            }
+        },
+
         status() {
-            return this.incident.resolved_at === null ? 'Ongoing' : 'Resolved';
+            const status = this.incident.resolved_at === null ? 'Ongoing' : 'Resolved';
+            return `${status} since ${this.statusSince}`;
         },
 
         statusSince() {
@@ -65,10 +67,14 @@ export default {
 
             // Display the time on the same day, otherwise display the date too
             point = new Date(point);
-            if ((new Date).toDateString() === point.toDateString()) {
-                return point.toLocaleTimeString();
-            }
-            return point.toLocaleString();
+
+            const d = `0${point.getDate()}`.slice(-2);
+            const m = `0${point.getMonth()}`.slice(-2);
+            const y = point.getFullYear();
+            const h = point.getHours();
+            const i = point.getMinutes();
+
+            return `${d}-${m}-${y} ${h}:${i}`;
         },
 
         cause() {
@@ -89,5 +95,10 @@ li {
 li strong {
     display: inline-block;
     width: 12em;
+}
+
+.badge-static {
+    width: 9em;
+    margin-right: 2em;
 }
 </style>
