@@ -71,8 +71,8 @@ export default {
             const d = `0${point.getDate()}`.slice(-2);
             const m = `0${point.getMonth()}`.slice(-2);
             const y = point.getFullYear();
-            const h = point.getHours();
-            const i = point.getMinutes();
+            const h = `0${point.getHours()}`.slice(-2);
+            const i = `0${point.getMinutes()}`.slice(-2);
 
             return `${d}-${m}-${y} ${h}:${i}`;
         },
