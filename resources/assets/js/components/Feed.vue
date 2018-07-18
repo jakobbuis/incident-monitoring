@@ -1,32 +1,36 @@
 <template>
-    <div class=container>
+    <div>
         <nav class="navbar navbar-dark" :class="poll.failing ? 'bg-red' : 'bg-dark'">
-            <a class="navbar-brand" href="#">
-                Incident monitoring
-                <span class="badge badge-pill badge-danger" v-if="ongoingIncidents.length > 0">
-                    {{ ongoingIncidents.length }} incidents ongoing
-                </span>
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    Incident monitoring
+                    <span class="badge badge-pill badge-danger" v-if="ongoingIncidents.length > 0">
+                        {{ ongoingIncidents.length }} incidents ongoing
+                    </span>
 
-                <span class="badge badge-pill badge-success" v-if="ongoingIncidents.length === 0">
-                    No incidents currently in progress
-                </span>
-            </a>
+                    <span class="badge badge-pill badge-success" v-if="ongoingIncidents.length === 0">
+                        No incidents currently in progress
+                    </span>
+                </a>
 
-            <div class="float-right">
-                Last update: {{ lastPoll ? lastPoll : 'unknown' }}
+                <div class="float-right">
+                    Last update: {{ lastPoll ? lastPoll : 'unknown' }}
+                </div>
             </div>
         </nav>
 
-        <div class="feed">
-            <incident
-                v-for="incident in ongoingIncidents"
-                :key="incident.id"
-                :incident="incident"></incident>
-            <hr>
-            <incident
-                v-for="incident in resolvedIncidents"
-                :key="incident.id"
-                :incident="incident"></incident>
+        <div class="container">
+            <div class="feed">
+                <incident
+                    v-for="incident in ongoingIncidents"
+                    :key="incident.id"
+                    :incident="incident"></incident>
+                <hr>
+                <incident
+                    v-for="incident in resolvedIncidents"
+                    :key="incident.id"
+                    :incident="incident"></incident>
+            </div>
         </div>
     </div>
 </template>

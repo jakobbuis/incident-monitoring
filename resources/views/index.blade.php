@@ -16,6 +16,13 @@
             <feed></feed>
         </div>
 
+        <footer class="footer">
+            <div class="container">
+                Built by Remko and Jakob, inspired by Marije:
+                <em>"Why don't we have this yet?"</em>
+            </div>
+        </footer>
+
         <script type="text/javascript" src="{{ mix('js/app.js') }}"></script>
     </body>
 </html>
