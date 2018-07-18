@@ -10,7 +10,7 @@ class IncidentsController extends Controller
 {
     public function index()
     {
-        $ongoing = Incident::ordered()->get();
+        $ongoing = Incident::ongoing()->ordered()->get();
         return IncidentResource::collection($ongoing);
     }
 }

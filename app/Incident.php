@@ -28,7 +28,7 @@ class Incident extends Model
         $this->save();
     }
 
-    public function scopeUnresolved(Builder $query) : Builder
+    public function scopeOngoing(Builder $query) : Builder
     {
         return $query->whereNull('resolved_at');
     }

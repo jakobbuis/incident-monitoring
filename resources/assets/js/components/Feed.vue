@@ -4,11 +4,11 @@
             <div class="container">
                 <a class="navbar-brand" href="#">
                     Incident monitoring
-                    <span class="badge badge-pill badge-danger" v-if="ongoingIncidents.length > 0">
-                        {{ ongoingIncidents.length }} incidents ongoing
+                    <span class="badge badge-pill badge-danger" v-if="incidents.length > 0">
+                        {{ incidents.length }} incidents ongoing
                     </span>
 
-                    <span class="badge badge-pill badge-success" v-if="ongoingIncidents.length === 0">
+                    <span class="badge badge-pill badge-success" v-if="incidents.length === 0">
                         No incidents currently in progress
                     </span>
                 </a>
@@ -22,12 +22,7 @@
         <div class="container">
             <div class="feed">
                 <incident
-                    v-for="incident in ongoingIncidents"
-                    :key="incident.id"
-                    :incident="incident"></incident>
-                <hr>
-                <incident
-                    v-for="incident in resolvedIncidents"
+                    v-for="incident in incidents"
                     :key="incident.id"
                     :incident="incident"></incident>
             </div>
@@ -64,14 +59,6 @@ export default {
     },
 
     computed: {
-        ongoingIncidents() {
-            return this.incidents.filter(i => i.resolved_at === null);
-        },
-
-        resolvedIncidents() {
-            return this.incidents.filter(i => i.resolved_at !== null);
-        },
-
         lastPoll() {
             const moment = this.poll.lastSuccessful;
             if (moment === null) {
