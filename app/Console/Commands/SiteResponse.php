@@ -55,6 +55,7 @@ class SiteResponse extends Command
             ]);
         } else {
             $website->resolveIncident('SiteDown');
+            $website->resolveIncident('CertificateError');
         }
     }
 }
