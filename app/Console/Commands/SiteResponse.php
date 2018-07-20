@@ -38,10 +38,9 @@ class SiteResponse extends Command
                 'exception' => $e,
             ]);
             // Check for certificate errors
-            if (strpos($e->getMessage(), 'certificate') !== FALSE) {
+            if (strpos($e->getMessage(), 'certificate') !== false) {
                 $website->startIncident('CertificateError', Incident::LEVEL_IMPORTANT);
-            }
-            else {
+            } else {
                 $website->startIncident('SiteDown', Incident::LEVEL_CRITICAL, (object) [
                     'http_status_code' => null,
                 ]);
