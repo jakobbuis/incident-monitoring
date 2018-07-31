@@ -83,6 +83,7 @@ export default {
             } else if (this.incident.type === 'CertificateError') {
                 return 'SSL-certificate failed validation';
             }
+            return 'Unknown incident';
         },
     },
 };
