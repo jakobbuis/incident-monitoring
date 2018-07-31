@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import Incident from './Incident';
+import Incident from './Incident.vue';
 
 export default {
     components: { Incident },
@@ -74,7 +74,7 @@ export default {
 
             return `${d}-${m}-${y} ${h}:${i}:${s}`;
         },
-    }
+    },
 };
 </script>
 

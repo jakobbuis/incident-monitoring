@@ -43,6 +43,8 @@ export default {
             if (this.incident.level === 3) {
                 return 'bg-success text-white';
             }
+
+            return 'bg-informational';
         },
 
         problem() {
@@ -51,6 +53,7 @@ export default {
             } else if (this.incident.type === 'CertificateError') {
                 return 'SSL problem';
             }
+            return 'unknown problem';
         },
 
         status() {
@@ -75,15 +78,6 @@ export default {
             const i = `0${point.getMinutes()}`.slice(-2);
 
             return `${d}-${m}-${y} ${h}:${i}`;
-        },
-
-        cause() {
-            if (this.incident.type === 'SiteDown') {
-                return 'HTTP response status is higher than 400';
-            } else if (this.incident.type === 'CertificateError') {
-                return 'SSL-certificate failed validation';
-            }
-            return 'Unknown incident';
         },
     },
 };
