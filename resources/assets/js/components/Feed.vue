@@ -66,7 +66,7 @@ export default {
             }
 
             const d = `0${moment.getDate()}`.slice(-2);
-            const m = `0${moment.getMonth()}`.slice(-2);
+            const m = `0${moment.getMonth() + 1}`.slice(-2);
             const y = moment.getFullYear();
             const h = moment.getHours();
             const i = moment.getMinutes();

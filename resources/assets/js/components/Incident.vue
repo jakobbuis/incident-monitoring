@@ -69,7 +69,7 @@ export default {
             point = new Date(point);
 
             const d = `0${point.getDate()}`.slice(-2);
-            const m = `0${point.getMonth()}`.slice(-2);
+            const m = `0${point.getMonth() + 1}`.slice(-2);
             const y = point.getFullYear();
             const h = `0${point.getHours()}`.slice(-2);
             const i = `0${point.getMinutes()}`.slice(-2);
