@@ -52,10 +52,10 @@ export default {
         pollChanges() {
             Axios.get('/api/incidents').then(response => {
                 this.incidents = response.data.data;
-                this.poll.lastSuccessful = new Date;
-                setTimeout(this.pollChanges, 5*1000);
+                this.poll.lastSuccessful = new Date();
+                setTimeout(this.pollChanges, 5 * 1000);
             });
-        }
+        },
     },
 
     computed: {
