@@ -20,6 +20,7 @@ class Lamp
 
     private function showAlert(string $level = 'red') : void
     {
+        throw new \Exception('Method not implemented');
         // lamp on
         // set lamp to desired colour, low brightness
         // repeat 5 times
@@ -29,24 +30,6 @@ class Lamp
             // sleep 1.9 seconds
         // lamp off
     }
-
-    // private function on()
-    // {
-    //     $command = $this->defaultCommand()->on(true);
-    //     $this->bridge->sendCommand($command);
-    // }
-
-    // private function off()
-    // {
-    //     $command = $this->defaultCommand()->on(false);
-    //     $this->bridge->sendCommand($command);
-    // }
-
-    // public function colour($hue, $saturation)
-    // {
-    //     $command = $this->defaultCommand()->hue($hue)->saturation($saturation);
-    //     $this->bridge->sendCommand($command);
-    // }
 
     private function defaultCommand()
     {
