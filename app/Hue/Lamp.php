@@ -9,6 +9,9 @@ class Lamp
     private $bridge;
     private $id;
 
+    const RED_ALERT = 0;
+    const YELLOW_ALERT = 12750;
+
     public function __construct()
     {
         $ip = config('hue.ip_address');
@@ -18,22 +21,26 @@ class Lamp
         $this->id = config('hue.lamp_id');
     }
 
-    private function showAlert(string $level = 'red') : void
+    private function showAlert(int $type = self::RED_ALERT) : void
     {
-        throw new \Exception('Method not implemented');
-        // lamp on
-        // set lamp to desired colour, low brightness
-        // repeat 5 times
-            // set lamp to full brightness, transition 2 seconds
-            // sleep 1.9 seconds
-            // set lamp to low brightness, transition 2 seconds
-            // sleep 1.9 seconds
-        // lamp off
-    }
+        $command = (new SetLightState($this->id));
 
-    private function defaultCommand()
-    {
-        $command = new SetLightState($this->id);
-        return $command->brightness(128)->transitionTime(3);
+        // define two states to alternate between
+        $up = (clone $command)->hue($type)->brightness(255)->transitionTime(2);
+        $down = (clone $command)->hue($type)->brightness(128)->transitionTime(2);
+
+        // lamp in down state and on
+        $this->bridge->sendCommand((clone $down)->on());
+
+        // alternate light between states
+        for ($i=0; $i < 3; $i++) {
+            $this->bridge->sendCommand($up);
+            sleep(2);
+            $this->bridge->sendCommand($down);
+            sleep(2);
+        }
+
+        // lamp off
+        $this->bridge->sendCommand((clone $command)->off());
     }
 }
