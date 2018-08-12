@@ -17,6 +17,10 @@ class Incident extends Model
     protected $fillable = ['type', 'data', 'resolved_at', 'level', 'website_id'];
     protected $casts = ['data' => 'array', 'resolved_at' => 'datetime'];
 
+    protected $dispatchesEvents = [
+        'created' => \App\Events\IncidentStarted::class,
+    ];
+
     public function website()
     {
         return $this->belongsTo(Website::class);

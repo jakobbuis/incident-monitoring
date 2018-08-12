@@ -21,7 +21,7 @@ class Lamp
         $this->id = config('hue.lamp_id');
     }
 
-    private function showAlert(int $type = self::RED_ALERT) : void
+    public function showAlert(int $type) : void
     {
         $command = (new SetLightState($this->id));
 
