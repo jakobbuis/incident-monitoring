@@ -34,7 +34,7 @@ class StartIncident
             'data' => $data,
         ]);
 
-        $message = "{$incident->type} incident started on ${$website->name} ({$website->url})";
+        $message = "{$incident->type} incident started on {$website->name} ({$website->url})";
         $phones = User::all()->filter('phone_number')->pluck('phone_number');
         foreach ($phones as $phone) {
             $this->twilio->sendSMS($phone, $message);
