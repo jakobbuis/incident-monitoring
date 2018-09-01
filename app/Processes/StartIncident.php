@@ -28,7 +28,7 @@ class StartIncident
         }
 
         $incident = Incident::create([
-            'website_id' => $website_id,
+            'website_id' => $website->id,
             'type' => $type,
             'level' => $level,
             'data' => $data,
