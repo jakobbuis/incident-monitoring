@@ -17,12 +17,16 @@ class SiteResponse extends Command
     protected $description = 'Check websites if they are up or down';
 
     private $guzzle;
+    private $startIncident;
+    private $resolveIncident;
 
-    public function __construct(Client $guzzle)
+    public function __construct(Client $guzzle, StartIncident $startIncident, ResolveIncident $resolveIncident)
     {
         parent::__construct();
 
         $this->guzzle = $guzzle;
+        $this->startIncident = $startIncident;
+        $this->resolveIncident = $resolveIncident;
     }
 
     public function handle()
@@ -32,9 +36,6 @@ class SiteResponse extends Command
 
     public function checkStatus(Website $website)
     {
-        $startIncident = new StartIncident;
-        $resolveIncident = new ResolveIncident;
-
         try {
             $response = $this->guzzle->get($website->url, ['http_errors' => false]);
             $status = $response->getStatusCode();
@@ -44,9 +45,9 @@ class SiteResponse extends Command
             ]);
             // Check for certificate errors
             if (strpos($e->getMessage(), 'certificate') !== false) {
-                $startIncident($website, 'CertificateError', Incident::LEVEL_IMPORTANT);
+                $this->startIncident($website, 'CertificateError', Incident::LEVEL_IMPORTANT);
             } else {
-                $startIncident($website, 'SiteDown', Incident::LEVEL_CRITICAL, [
+                $this->startIncident($website, 'SiteDown', Incident::LEVEL_CRITICAL, [
                     'http_status_code' => null,
                 ]);
             }
@@ -55,12 +56,12 @@ class SiteResponse extends Command
         Log::info("Website {$website->name} responded to check with HTTP {$status}");
 
         if ($status >= 400) {
-            $startIncident($website, 'SiteDown', Incident::LEVEL_CRITICAL, [
+            $this->startIncident($website, 'SiteDown', Incident::LEVEL_CRITICAL, [
                 'http_status_code' => $status,
             ]);
         } else {
-            $resolveIncident($website, 'SiteDown');
-            $resolveIncident($website, 'CertificateError');
+            $this->resolveIncident($website, 'SiteDown');
+            $this->resolveIncident($website, 'CertificateError');
         }
     }
 }
