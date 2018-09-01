@@ -18,7 +18,7 @@ class Twilio
     {
         $this->twilio->messages->create($number, [
             'from' => config('twilio.from'),
-            'body' => $body,
+            'body' => $message,
         ]);
     }
 }
