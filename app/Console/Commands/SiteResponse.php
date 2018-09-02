@@ -36,6 +36,10 @@ class SiteResponse extends Command
 
     public function checkStatus(Website $website)
     {
+        // Prevent a RuntimeError by aliasing to local scope variables
+        $start = $this->startIncident;
+        $resolve = $this->resolveIncident;
+
         try {
             $response = $this->guzzle->get($website->url, ['http_errors' => false]);
             $status = $response->getStatusCode();
@@ -45,9 +49,9 @@ class SiteResponse extends Command
             ]);
             // Check for certificate errors
             if (strpos($e->getMessage(), 'certificate') !== false) {
-                $this->startIncident($website, 'CertificateError', Incident::LEVEL_IMPORTANT);
+                $start($website, 'CertificateError', Incident::LEVEL_IMPORTANT);
             } else {
-                $this->startIncident($website, 'SiteDown', Incident::LEVEL_CRITICAL, [
+                $start($website, 'SiteDown', Incident::LEVEL_CRITICAL, [
                     'http_status_code' => null,
                 ]);
             }
@@ -56,12 +60,12 @@ class SiteResponse extends Command
         Log::info("Website {$website->name} responded to check with HTTP {$status}");
 
         if ($status >= 400) {
-            $this->startIncident($website, 'SiteDown', Incident::LEVEL_CRITICAL, [
+            $start($website, 'SiteDown', Incident::LEVEL_CRITICAL, [
                 'http_status_code' => $status,
             ]);
         } else {
-            $this->resolveIncident($website, 'SiteDown');
-            $this->resolveIncident($website, 'CertificateError');
+            $resolve($website, 'SiteDown');
+            $resolve($website, 'CertificateError');
         }
     }
 }
