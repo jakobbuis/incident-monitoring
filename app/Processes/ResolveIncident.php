@@ -15,7 +15,7 @@ class ResolveIncident
 
         $incident->resolve();
 
-        $message = "{$incident->type} incident resolved on ${$website->name} ({$website->url})";
+        $message = "{$incident->type} incident resolved on {$website->name} ({$website->url})";
         $phones = User::all()->pluck('phone_number')->filter();
         foreach ($phones as $phone) {
             $this->twilio->sendSMS($phone, $message);
