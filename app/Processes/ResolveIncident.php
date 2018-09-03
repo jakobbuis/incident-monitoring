@@ -2,10 +2,19 @@
 
 namespace App\Processes;
 
+use App\Services\Twilio;
+use App\User;
 use App\Website;
 
 class ResolveIncident
 {
+    private $twilio;
+
+    public function __construct(Twilio $twilio)
+    {
+        $this->twilio = $twilio;
+    }
+
     public function __invoke(Website $website, string $type) : void
     {
         $incident = $website->incidents()->where('type', $type)->first();
