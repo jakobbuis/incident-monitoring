@@ -2,6 +2,7 @@
 
 namespace App\Processes;
 
+use App\Services\Slack;
 use App\Services\Twilio;
 use App\User;
 use App\Website;
@@ -9,10 +10,12 @@ use App\Website;
 class ResolveIncident
 {
     private $twilio;
+    private $slack;
 
-    public function __construct(Twilio $twilio)
+    public function __construct(Twilio $twilio, Slack $slack)
     {
         $this->twilio = $twilio;
+        $this->slack = $slack;
     }
 
     public function __invoke(Website $website, string $type) : void
@@ -29,5 +32,7 @@ class ResolveIncident
         foreach ($phones as $phone) {
             $this->twilio->sendSMS($phone, $message);
         }
+
+        $this->slack->sendNotification($message);
     }
 }
