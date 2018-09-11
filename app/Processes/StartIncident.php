@@ -4,18 +4,15 @@ namespace App\Processes;
 
 use App\Incident;
 use App\Services\Slack;
-use App\Services\Twilio;
 use App\User;
 use App\Website;
 
 class StartIncident
 {
-    private $twilio;
     private $slack;
 
-    public function __construct(Twilio $twilio, Slack $slack)
+    public function __construct(Slack $slack)
     {
-        $this->twilio = $twilio;
         $this->slack = $slack;
     }
 
@@ -38,11 +35,6 @@ class StartIncident
         ]);
 
         $message = "{$incident->type} incident started on {$website->name} ({$website->url})";
-        $phones = User::all()->pluck('phone_number')->filter();
-        foreach ($phones as $phone) {
-            $this->twilio->sendSMS($phone, $message);
-        }
-
         $this->slack->sendNotification($message);
     }
 }
