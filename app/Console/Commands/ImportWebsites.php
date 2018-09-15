@@ -10,13 +10,14 @@ use League\Csv\Statement;
 
 class ImportWebsites extends Command
 {
+    protected $description = 'Import a CSV-file with website information';
+
     protected $signature = 'websites:import
                                 {file : file path to load}
                                 {--name=Account : Column name for the name of the website}
                                 {--url=URL : Column name for the URL}
                                 {--filter-key=Status : Column name to filter by (requires --filter-value)}
                                 {--filter-value=Productie : Column value to filter by (requires --filter-key)}';
-    protected $description = 'Import a CSV-file with website information';
 
     public function handle()
     {
@@ -35,6 +36,7 @@ class ImportWebsites extends Command
             // Filter by the options given
             return $this->filter($record);
         })->map(function($record) {
+            // Grab only the fields we need
             return $this->restructureRecord($record);
         })->filter(function($record) {
             // Do not create invalid records
@@ -45,6 +47,9 @@ class ImportWebsites extends Command
         });
     }
 
+    /**
+     * Filter the records by the filtering options given
+     */
     private function filter(array $record) : bool
     {
         $key = $this->option('filter-key');
@@ -58,6 +63,9 @@ class ImportWebsites extends Command
         return false;
     }
 
+    /**
+     * Standarise the record to make later operations easier
+     */
     private function restructureRecord(array $record) : array
     {
         return [
@@ -66,6 +74,9 @@ class ImportWebsites extends Command
         ];
     }
 
+    /**
+     * Filter out records which have incomplete or invalid information
+     */
     private function validRecord(array $record) : bool
     {
         if (empty($record['name'])) {
@@ -86,6 +97,9 @@ class ImportWebsites extends Command
         return true;
     }
 
+    /**
+     * Create or update the website with the new record
+     */
     public function save(array $record) : void
     {
         $existingWebsite = Website::where('name', $record['name'])->first();
