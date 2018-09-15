@@ -5,9 +5,13 @@ namespace App;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Incident extends Model
 {
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
+
     const LEVEL_CRITICAL = 1;
     const LEVEL_IMPORTANT = 2;
     const LEVEL_SMALL = 3;
