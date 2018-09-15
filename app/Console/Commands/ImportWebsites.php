@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Website;
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use League\Csv\Reader;
 use League\Csv\Statement;
@@ -17,7 +18,8 @@ class ImportWebsites extends Command
                                 {--name=Account : Column name for the name of the website}
                                 {--url=URL : Column name for the URL}
                                 {--filter-key=Status : Column name to filter by (requires --filter-value)}
-                                {--filter-value=Productie : Column value to filter by (requires --filter-key)}';
+                                {--filter-value=Productie : Column value to filter by (requires --filter-key)}
+                                {--purge : Remove all websites from the system not listed in the imported file}';
 
     public function handle()
     {
@@ -30,9 +32,9 @@ class ImportWebsites extends Command
         $csv = Reader::createFromPath($file, 'r');
         $csv->setHeaderOffset(0);
 
-        // Process all rows
+        // Parse and filter all rows to [process
         $records = collect((new Statement)->process($csv));
-        $records->filter(function($record) {
+        $records = $records->filter(function($record) {
             // Filter by the options given
             return $this->filter($record);
         })->map(function($record) {
@@ -41,10 +43,17 @@ class ImportWebsites extends Command
         })->filter(function($record) {
             // Do not create invalid records
             return $this->validRecord($record);
-        })->each(function($record) {
-            // Create all records
+        });
+
+        // Create or update websites
+        $records->each(function($record) {
             $this->save($record);
         });
+
+        // if --purge is given, purge all other websites not in the imported file
+        if ($this->option('purge')) {
+            $this->purgeOthers($records);
+        }
     }
 
     /**
@@ -113,5 +122,17 @@ class ImportWebsites extends Command
             Website::create($record);
             Log::info("Created new website entry", $record);
         }
+    }
+
+    public function purgeOthers(Collection $records) : void
+    {
+        $names = $records->pluck('name');
+
+        Website::all()->filter(function($website) use ($names) {
+            return !$names->contains($website->name);
+        })->each(function($website){
+            Log::info("Deleting website {$website->id}: name is not in file imported with --purge");
+            $website->delete();
+        });
     }
 }
