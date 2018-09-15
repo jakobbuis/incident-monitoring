@@ -34,12 +34,12 @@ class ImportWebsites extends Command
         $records->filter(function($record) {
             // Filter by the options given
             return $this->filter($record);
-        })->map(function($record){
+        })->map(function($record) {
             return $this->restructureRecord($record);
-        })->filter(function($record){
+        })->filter(function($record) {
             // Do not create invalid records
             return $this->validRecord($record);
-        })->each(function($record){
+        })->each(function($record) {
             // Create all records
             $this->save($record);
         });
