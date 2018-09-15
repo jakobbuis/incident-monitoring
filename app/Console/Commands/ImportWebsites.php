@@ -100,7 +100,7 @@ class ImportWebsites extends Command
     /**
      * Create or update the website with the new record
      */
-    public function save(array $record) : void
+    private function save(array $record) : void
     {
         $existingWebsite = Website::where('name', $record['name'])->first();
 
