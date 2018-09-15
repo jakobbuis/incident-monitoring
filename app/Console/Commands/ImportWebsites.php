@@ -10,7 +10,10 @@ use League\Csv\Statement;
 
 class ImportWebsites extends Command
 {
-    protected $signature = 'websites:import {file}';
+    protected $signature = 'websites:import
+                                {file : file path to load}
+                                {--name=Account : Column name for the name of the website}
+                                {--url=URL : Column name for the URL}';
     protected $description = 'Import a CSV-file with website information';
 
     public function handle()
@@ -22,10 +25,13 @@ class ImportWebsites extends Command
             return;
         }
         $csv = Reader::createFromPath($file, 'r');
+        $csv->setHeaderOffset(0);
 
         // Process all rows
         $records = collect((new Statement)->process($csv));
-        $records->filter(function($record){
+        $records->map(function($record){
+            return $this->restructureRecord($record);
+        })->filter(function($record){
             // Do not create invalid records
             return $this->validRecord($record);
         })->each(function($record){
@@ -34,19 +40,27 @@ class ImportWebsites extends Command
         });
     }
 
+    private function restructureRecord(array $record) : array
+    {
+        return [
+            'name' => $record[$this->option('name')],
+            'url' => $record[$this->option('url')],
+        ];
+    }
+
     private function validRecord(array $record) : bool
     {
-        if (!is_array($record)) {
-            Log::info('Not processsing record: is not an array', $record);
+        if (empty($record['name'])) {
+            Log::info('Not processing record: name is empty', $record);
             return false;
         }
 
-        if (count($record) !== 2) {
-            Log::info('Not processsing record: is not exactly two items', $record);
+        if (empty($record['url'])) {
+            Log::info('Not processing record: url is empty', $record);
             return false;
         }
 
-        if (filter_var($record[1], FILTER_VALIDATE_URL) === false) {
+        if (filter_var($record['url'], FILTER_VALIDATE_URL) === false) {
             Log::info('Not processing record: URL is not valid', $record);
             return false;
         }
@@ -56,18 +70,15 @@ class ImportWebsites extends Command
 
     public function save(array $record) : void
     {
-        $existingWebsite = Website::where('name', $record[0])->first();
+        $existingWebsite = Website::where('name', $record['name'])->first();
 
         if ($existingWebsite) {
-            $existingWebsite->name = $record[0];
-            $existingWebsite->url = $record[1];
+            $existingWebsite->name = $record['name'];
+            $existingWebsite->url = $record['url'];
             $existingWebsite->save();
             Log::info("Updated website {$existingWebsite->id} with new data", $record);
         } else {
-            Website::create([
-                'name' => $record[0],
-                'url' => $record[1],
-            ]);
+            Website::create($record);
             Log::info("Created new website entry", $record);
         }
     }
