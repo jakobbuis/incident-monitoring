@@ -89,17 +89,17 @@ class ImportWebsites extends Command
     private function validRecord(array $record) : bool
     {
         if (empty($record['name'])) {
-            Log::info('Not processing record: name is empty', $record);
+            Log::info('Skipping record: name is empty', $record);
             return false;
         }
 
         if (empty($record['url'])) {
-            Log::info('Not processing record: url is empty', $record);
+            Log::info('Skipping record: url is empty', $record);
             return false;
         }
 
         if (filter_var($record['url'], FILTER_VALIDATE_URL) === false) {
-            Log::info('Not processing record: URL is not valid', $record);
+            Log::info('Skipping record: URL is not valid', $record);
             return false;
         }
 
