@@ -32,16 +32,16 @@ class ImportWebsites extends Command
         $csv = Reader::createFromPath($file, 'r');
         $csv->setHeaderOffset(0);
 
-        // Parse and filter all rows to [process
+        // Parse rows into the fields we need
         $records = collect((new Statement)->process($csv));
-        $records = $records->filter(function($record) {
-            // Filter by the options given
-            return $this->filter($record);
-        })->map(function($record) {
-            // Grab only the fields we need
+        $records = $records->map(function($record) {
             return $this->restructureRecord($record);
+        });
+
+        // Filter out unwanted and invalid rows
+        $records = $records->filter(function($record) {
+            return $this->filter($record);
         })->filter(function($record) {
-            // Do not create invalid records
             return $this->validRecord($record);
         });
 
@@ -57,22 +57,6 @@ class ImportWebsites extends Command
     }
 
     /**
-     * Filter the records by the filtering options given
-     */
-    private function filter(array $record) : bool
-    {
-        $key = $this->option('filter-key');
-        $value = $this->option('filter-value');
-
-        if (isset($record[$key]) && $record[$key] === $value) {
-            return true;
-        }
-
-        Log::info('Skipping record: does not meet filter options', $record);
-        return false;
-    }
-
-    /**
      * Standarise the record to make later operations easier
      */
     private function restructureRecord(array $record) : array
@@ -80,7 +64,23 @@ class ImportWebsites extends Command
         return [
             'name' => $record[$this->option('name')],
             'url' => $record[$this->option('url')],
+            'filter' => $record[$this->option('filter-key')],
         ];
+    }
+
+    /**
+     * Filter the records by the filtering options given
+     */
+    private function filter(array $record) : bool
+    {
+        $value = $this->option('filter-value');
+
+        if ($record['filter'] === $value) {
+            return true;
+        }
+
+        Log::info('Skipping record: does not meet filter options', $record);
+        return false;
     }
 
     /**
