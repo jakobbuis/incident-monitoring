@@ -13,7 +13,9 @@ class ImportWebsites extends Command
     protected $signature = 'websites:import
                                 {file : file path to load}
                                 {--name=Account : Column name for the name of the website}
-                                {--url=URL : Column name for the URL}';
+                                {--url=URL : Column name for the URL}
+                                {--filter-key=Status : Column name to filter by (requires --filter-value)}
+                                {--filter-value=Productie : Column value to filter by (requires --filter-key)}';
     protected $description = 'Import a CSV-file with website information';
 
     public function handle()
@@ -29,7 +31,10 @@ class ImportWebsites extends Command
 
         // Process all rows
         $records = collect((new Statement)->process($csv));
-        $records->map(function($record){
+        $records->filter(function($record) {
+            // Filter by the options given
+            return $this->filter($record);
+        })->map(function($record){
             return $this->restructureRecord($record);
         })->filter(function($record){
             // Do not create invalid records
@@ -38,6 +43,19 @@ class ImportWebsites extends Command
             // Create all records
             $this->save($record);
         });
+    }
+
+    private function filter(array $record) : bool
+    {
+        $key = $this->option('filter-key');
+        $value = $this->option('filter-value');
+
+        if (isset($record[$key]) && $record[$key] === $value) {
+            return true;
+        }
+
+        Log::info('Skipping record: does not meet filter options', $record);
+        return false;
     }
 
     private function restructureRecord(array $record) : array
