@@ -1,6 +1,6 @@
 <?php
 
-namespace Processes;
+namespace App\Processes;
 
 use App\Services\Slack;
 use App\User;
