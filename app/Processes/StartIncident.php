@@ -23,7 +23,7 @@ class StartIncident
             throw new \DomainException('Invalid incident level');
         }
 
-        $existingIncident = $website->incidents()->where('type', $type)->first();
+        $existingIncident = $website->incidents()->ongoing()->where('type', $type)->first();
         if ($existingIncident) {
             Log::info("Not starting new incident for <$website, $type>, because an incident is ongoing");
             return;
