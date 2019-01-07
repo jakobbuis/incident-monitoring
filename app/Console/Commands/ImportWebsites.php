@@ -26,7 +26,7 @@ class ImportWebsites extends Command
         // Read the CSV file
         $file = $this->argument('file');
         if (!is_readable($file)) {
-            $this->error('Cannot read input file');
+            Log::error('Cannot read input file');
             return;
         }
         $csv = Reader::createFromPath($file, 'r');
