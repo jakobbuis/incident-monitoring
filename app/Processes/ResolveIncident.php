@@ -20,7 +20,6 @@ class ResolveIncident
     {
         $incident = $website->incidents()->ongoing()->where('type', $type)->first();
         if (!$incident) {
-            Log::info("Not resolving incident for <{$website->id}, {$type}>, because it isn't ongoing");
             return;
         }
 
