@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Processes;
+namespace Processes;
 
 use App\Services\Slack;
 use App\User;
 use App\Website;
+use Illuminate\Support\Facades\Log;
 
 class ResolveIncident
 {
@@ -19,9 +20,11 @@ class ResolveIncident
     {
         $incident = $website->incidents()->ongoing()->where('type', $type)->first();
         if (!$incident) {
+            Log::info("Not resolving incident for <$website, $type>, because it isn't ongoing");
             return;
         }
 
+        Log::info("Resolving incident for <$website, $type>");
         $incident->resolve();
 
         $message = "{$incident->type} incident resolved on {$website->name} ({$website->url})";
