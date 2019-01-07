@@ -17,8 +17,8 @@ class ImportWebsites extends Command
                                 {file : file path to load}
                                 {--name=Account : Column name for the name of the website}
                                 {--url=URL : Column name for the URL}
-                                {--filter-key=Status : Column name to filter by (requires --filter-value)}
-                                {--filter-value=Productie : Column value to filter by (requires --filter-key)}
+                                {--filter-key=Incident Monitoring : Column name to filter by (requires --filter-value)}
+                                {--filter-value=Ja : Column value to filter by (requires --filter-key)}
                                 {--purge : Remove all websites from the system not listed in the imported file}';
 
     public function handle()
