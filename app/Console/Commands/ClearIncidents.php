@@ -7,16 +7,19 @@ use Illuminate\Console\Command;
 
 class ClearIncidents extends Command
 {
-    protected $signature = 'incidents:clear';
-    protected $description = 'Removes all current incidents, useful for debuggin';
+    protected $signature = 'incidents:resolve';
+    protected $description = 'Resolves all current incidents, regardless of their status';
 
     public function handle()
     {
-        $incidents = Incident::all();
-        $count = $incidents->count();
+        $ongoingIncidents = Incident::all()->filter(function($incident){
+            return $incident->resolved_at === null;
+        });
 
-        Incident::all()->each->delete();
+        $ongoingIncidents->each(function($incident){
+            $incident->resolve();
+        });
 
-        echo "Purged {$count} incidents from the database\n";
+        echo "Forcefully resolved {$ongoingIncidents->count()} ongoing incidents\n";
     }
 }
