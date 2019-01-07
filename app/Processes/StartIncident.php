@@ -25,11 +25,11 @@ class StartIncident
 
         $existingIncident = $website->incidents()->ongoing()->where('type', $type)->first();
         if ($existingIncident) {
-            Log::info("Not starting new incident for <$website, $type>, because an incident is ongoing");
+            Log::info("Not starting new incident for <{$website->id}, {$type}>, because an incident is ongoing");
             return;
         }
 
-        Log::info("Starting new incident for <$website, $type>");
+        Log::info("Starting new incident for <{$website->id}, {$type}>");
         $incident = Incident::create([
             'website_id' => $website->id,
             'type' => $type,

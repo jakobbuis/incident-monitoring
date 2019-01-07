@@ -20,11 +20,11 @@ class ResolveIncident
     {
         $incident = $website->incidents()->ongoing()->where('type', $type)->first();
         if (!$incident) {
-            Log::info("Not resolving incident for <$website, $type>, because it isn't ongoing");
+            Log::info("Not resolving incident for <{$website->id}, {$type}>, because it isn't ongoing");
             return;
         }
 
-        Log::info("Resolving incident for <$website, $type>");
+        Log::info("Resolving incident for <{$website->id}, {$type}>");
         $incident->resolve();
 
         $message = "{$incident->type} incident resolved on {$website->name} ({$website->url})";
