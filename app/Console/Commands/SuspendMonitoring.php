@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\Slack;
 use App\Website;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -10,6 +11,14 @@ class SuspendMonitoring extends Command
 {
     protected $signature = 'website:suspend';
     protected $description = 'Suspend the monitoring for a website';
+
+    private $slack;
+
+    public function __construct(Slack $slack)
+    {
+        parent::__construct();
+        $this->slack = $slack;
+    }
 
     public function handle()
     {
@@ -35,6 +44,9 @@ class SuspendMonitoring extends Command
         $website->monitoring_suspended = Carbon::now();
         $website->save();
 
-        $this->info("Suspended monitoring for {$website->name}");
+        // Report to console and slack
+        $message = "Suspended monitoring for {$website->name}";
+        $this->info($message);
+        $this->slack->sendNotification($message);
     }
 }
