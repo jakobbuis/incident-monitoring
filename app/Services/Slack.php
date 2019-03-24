@@ -18,6 +18,7 @@ class Slack
         $webhook = config('slack.webhook_url');
         if (empty($webhook)) {
             Log::info('Not updating Slack-channel: no webhook URL is set', ['message' => $text]);
+            return;
         }
 
         $this->guzzle->post($webhook, [
