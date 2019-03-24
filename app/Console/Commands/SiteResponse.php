@@ -43,14 +43,14 @@ class SiteResponse extends Command
         });
 
         // Check all failing websites again after a short delay
-        sleep(5);
+        sleep(60);
         $websites = $websites->filter(function ($website) {
             return !$this->check($website);
         });
 
         // Check all failing websites again after a short delay
         // create an incident if this third check fails as well
-        sleep(5);
+        sleep(60);
         $websites->each(function ($website) {
             $this->checkAndStartIncident($website);
         });
