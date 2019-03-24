@@ -22,4 +22,9 @@ class Website extends Model
     {
         return $query->where('monitoring_suspended', null);
     }
+
+    public function scopeSuspended(Builder $query) : Builder
+    {
+        return $query->whereNotNull('monitoring_suspended');
+    }
 }
