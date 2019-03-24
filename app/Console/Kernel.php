@@ -25,6 +25,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('check:response')->everyFifteenMinutes();
+        $schedule->command('suspensions:report')->weekdays()->dailyAt('09:00');
     }
 
     /**
