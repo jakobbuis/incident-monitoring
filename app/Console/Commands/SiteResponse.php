@@ -35,7 +35,8 @@ class SiteResponse extends Command
      */
     public function handle()
     {
-        $websites = Website::all();
+        // Ignore websites with suspended monitoring
+        $websites = Website::monitored()->get();
 
         // Check all websites
         $websites = $websites->filter(function ($website) {
